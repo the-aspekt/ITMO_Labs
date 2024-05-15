@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+   <AddIn Type="Application">
+      <Name>MyFirstPlugin</Name>
+      <Assembly>E:\Pavel\Документы\!C#\MyFirstPlugin\MyFirstPlugin\bin\Debug\MyFirstPlugin.dll</Assembly>
+      <ClientId>a9466535-97d2-4e86-a174-445897a39414</ClientId>
+      <FullClassName>MyFirstPlugin.app</FullClassName>  
+      <VendorId>SozonovPavek</VendorId>
+      <VendorDescription><![CDATA[https://knowledge.autodesk.com/search?search=AddInManager&sort=score]]></VendorDescription>
+  </AddIn>
+</RevitAddIns>
