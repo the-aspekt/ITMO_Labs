@@ -51,11 +51,17 @@
   <ItemGroup>
     <Compile Include="app.cs" />
     <Compile Include="CountColumns.cs" />
+    <Compile Include="CountWallsVolume.cs" />
+    <Compile Include="CountPipelinesVolume.cs" />
+    <Compile Include="CountPipelinesLength.cs" />
     <Compile Include="CountWallsByLevels.cs" />
     <Compile Include="CountPipelinesOnActiveView.cs" />
     <Compile Include="CountAirChannels.cs" />
+    <Compile Include="CreateProjectParameter.cs" />
+    <Compile Include="SetParameterValue.cs" />
     <Compile Include="MyFirstCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WallsSelectionFilter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MyFirstPlugin.addin">
