@@ -43,6 +43,7 @@ namespace MyFirstPlugin
                 new PushButtonData("Button5", "Кол-во стен по этажам", assemblyPath, "MyFirstPlugin.CountWallsByLevels");
             panel.AddItem(pushButtonData5);
             panel.AddSeparator();
+
             RibbonPanel panel2 = application.CreateRibbonPanel(ribbonTabName, "Раздел 3");
             PushButtonData pushButtonData2_1 =
                 new PushButtonData("Button2_1", "Объем выбранных стен", assemblyPath, "MyFirstPlugin.CountWallsVolume");
@@ -60,7 +61,23 @@ namespace MyFirstPlugin
             PushButtonData pushButtonData2_4 =
                 new PushButtonData("Button2_4", "Параметр проекта", assemblyPath, "MyFirstPlugin.CreateProjectParameter");
             panel2.AddItem(pushButtonData2_4);
-           
+            panel2.AddSeparator();
+
+            RibbonPanel panel3 = application.CreateRibbonPanel(ribbonTabName, "Раздел 4");
+            PushButtonData pushButtonData3_1 =
+                new PushButtonData("Button3_1", "Вывод выбранных стен", assemblyPath, "MyFirstPlugin.OutputWalls");
+            panel3.AddSeparator();
+            panel3.AddItem(pushButtonData3_1);
+            panel3.AddSeparator();
+            PushButtonData pushButtonData3_2 =
+                new PushButtonData("Button3_2", "Вывод выбранных труб", assemblyPath, "MyFirstPlugin.OutputPipes");
+            panel3.AddItem(pushButtonData3_2);
+            panel3.AddSeparator();
+            PushButtonData pushButtonData3_3 =
+                new PushButtonData("Button3_3", "Вывод всех окон и дверей", assemblyPath, "MyFirstPlugin.OutputApertures");
+            panel3.AddItem(pushButtonData3_3);
+            panel3.AddSeparator();
+
 
             return Result.Succeeded;
         }

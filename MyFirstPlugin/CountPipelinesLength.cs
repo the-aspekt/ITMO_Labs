@@ -24,12 +24,10 @@ namespace MyFirstPlugin
             Document document = uIDocument.Document;
 
             Selection currentSelection = uIDocument.Selection;
-
-            double length = 0;
+            List<Pipe> pipes = new List<Pipe>();
             if (currentSelection.GetElementIds().Count < 1)
             {
                 TaskDialog.Show("Первое действие", "Выберите элементы");
-                //WallsSelectionFilter wsf = new WallsSelectionFilter();
                 List<Reference> pickedElement;
                 try
                 {
@@ -39,27 +37,27 @@ namespace MyFirstPlugin
                 {
                     return Result.Cancelled;
                 }
-
                 foreach (Reference element in pickedElement)
                 {
-                    Pipe pipe = document.GetElement(element) as Pipe;
-                    if (pipe != null)
-                        length += pipe
-                        .get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH)
-                        .AsDouble();
+                    Element thisElement = document.GetElement(element);
+                    if (thisElement.GetType() == typeof(Pipe))
+                    {
+                        Pipe pipe = document.GetElement(element) as Pipe;
+                        pipes.Add(pipe);
+                    }
                 }         
             }
             else
             {
                 var currentSelectionElementIDs = currentSelection.GetElementIds();
-                var selectedPipes = new FilteredElementCollector(document, currentSelectionElementIDs)
+                pipes = new FilteredElementCollector(document, currentSelectionElementIDs)
                     .WhereElementIsNotElementType()
                     .OfClass(typeof(Pipe))
                     .Cast<Pipe>()
-                    .ToList();
-                length = selectedPipes.Sum(pipe => pipe.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
+                    .ToList();                
             }
 
+            double length = pipes.Sum(pipe => pipe.get_Parameter(BuiltInParameter.CURVE_ELEM_LENGTH).AsDouble());
             if (length == 0)            
                 TaskDialog.Show("Завершено", "Не выбрано ни одной трубы");            
             else
