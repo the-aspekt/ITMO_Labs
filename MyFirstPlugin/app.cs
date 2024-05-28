@@ -78,6 +78,17 @@ namespace MyFirstPlugin
             panel3.AddItem(pushButtonData3_3);
             panel3.AddSeparator();
 
+            RibbonPanel panel4 = application.CreateRibbonPanel(ribbonTabName, "Раздел 5");
+            PushButtonData pushButtonData4_1 =
+                new PushButtonData("Button4_1", "Вызов окна с кнопками", assemblyPath, "MyFirstPlugin.Main4_1");
+            panel4.AddSeparator();
+            panel4.AddItem(pushButtonData4_1);
+            panel4.AddSeparator();
+            PushButtonData pushButtonData4_2 =
+                new PushButtonData("Button4_2", "Вызов окна для изменения типов стен", assemblyPath, "MyFirstPlugin.Main4_2");
+            panel4.AddItem(pushButtonData4_2);
+            panel4.AddSeparator();
+
 
             return Result.Succeeded;
         }
