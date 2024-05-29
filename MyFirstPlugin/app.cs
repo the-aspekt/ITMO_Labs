@@ -20,11 +20,13 @@ namespace MyFirstPlugin
         public Result OnStartup(UIControlledApplication application)
         {
             string assemblyPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-            string ribbonTabName = "SZN_Plugins";
+            #region Разделы2-5
+            string ribbonTabName = "Разделы 2-5";
+
             application.CreateRibbonTab(ribbonTabName);
             RibbonPanel panel = application.CreateRibbonPanel(ribbonTabName, "Раздел 2");
             PushButtonData pushButtonData =
-                new PushButtonData("Button1", "Передать параметры",assemblyPath, "MyFirstPlugin.MyFirstCommand");
+                new PushButtonData("Button1", "Передать параметры", assemblyPath, "MyFirstPlugin.MyFirstCommand");
             panel.AddItem(pushButtonData);
             panel.AddSeparator();
             PushButtonData pushButtonData2 =
@@ -88,6 +90,26 @@ namespace MyFirstPlugin
                 new PushButtonData("Button4_2", "Вызов окна для изменения типов стен", assemblyPath, "MyFirstPlugin.Main4_2");
             panel4.AddItem(pushButtonData4_2);
             panel4.AddSeparator();
+            #endregion
+            #region Разделы6-8
+            string ribbonTabName2 = "Разделы 6-8";
+
+            application.CreateRibbonTab(ribbonTabName2);
+            RibbonPanel panel6 = application.CreateRibbonPanel(ribbonTabName2, "Раздел 6");
+            PushButtonData pushButtonData6_1 =
+                new PushButtonData("Button6_1", "Создать воздуховод", assemblyPath, "MyFirstPlugin.Main6_1");
+            panel6.AddItem(pushButtonData6_1);
+            panel6.AddSeparator();
+            PushButtonData pushButtonData6_2 =
+                new PushButtonData("Button6_2", "Вставить мебель", assemblyPath, "MyFirstPlugin.Main6_2");
+            panel6.AddItem(pushButtonData6_2);
+            panel6.AddSeparator();
+            PushButtonData pushButtonData6_3 =
+                new PushButtonData("Button6_3", "Расставить элементы между двумя точками", assemblyPath, "MyFirstPlugin.Main6_3");
+            panel6.AddItem(pushButtonData6_3);
+            panel6.AddSeparator();
+
+            #endregion
 
 
             return Result.Succeeded;

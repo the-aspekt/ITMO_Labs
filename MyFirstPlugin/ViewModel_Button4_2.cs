@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.UI.Selection;
+using RevitAPITrainingLibrary;
 
 namespace MyFirstPlugin
 {
@@ -37,62 +38,9 @@ namespace MyFirstPlugin
         {
             _commandData = commandData;
             WallTypeApplyCommand = new DelegateCommand(OnWallTypeApplyCommand);
-            WallTypes = GetWallTypes();
-            SelectedWalls = SelectWalls();
-        }
-
-        public List<WallType> GetWallTypes()
-        {
-            WallTypes = new FilteredElementCollector(_commandData.Application.ActiveUIDocument.Document)
-               .OfClass(typeof(WallType))
-               .Cast<WallType>()
-               .ToList();
-            return WallTypes;
-        }
-
-        public List<Wall> SelectWalls()
-        {
-            UIApplication uIApplication = _commandData.Application;
-            UIDocument uIDocument = uIApplication.ActiveUIDocument;
-            Document document = uIDocument.Document;
-
-            Selection currentSelection = uIDocument.Selection;
-
-            List<Wall> walls = new List<Wall>();
-
-            if (currentSelection.GetElementIds().Count < 1)
-            {
-                TaskDialog.Show("Первое действие", "Выберите стены");
-                WallsSelectionFilter wsf = new WallsSelectionFilter();
-                List<Reference> pickedElement;
-
-                try
-                {
-                    pickedElement = currentSelection.PickObjects(ObjectType.Element, wsf, "Выберите стены").ToList();
-                }
-                catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-                {
-                    return null;
-                }
-
-                foreach (Reference element in pickedElement)
-                {
-                    Wall wall = document.GetElement(element) as Wall;
-                    walls.Add(wall);
-                }
-            }
-            else
-            {
-                var currentSelectionElementIDs = currentSelection.GetElementIds();
-                walls = new FilteredElementCollector(document, currentSelectionElementIDs)
-                    .WhereElementIsNotElementType()
-                    .OfClass(typeof(Wall))
-                    .Cast<Wall>()
-                    .ToList();
-            }
-
-            return walls;
-        }
+            WallTypes = WallsUtils.GetWallTypes(_commandData);
+            SelectedWalls = SelectionUtils.SelectWalls(_commandData);
+        }       
 
         private void OnWallTypeApplyCommand()
         {
@@ -111,7 +59,7 @@ namespace MyFirstPlugin
                 t.Start($"Корректировка типов стен");
                 foreach (Wall wall in SelectedWalls)
                 {
-                    wall.WallType = SelectedWallType;
+                    wall.ChangeTypeId(SelectedWallType.Id);
                 }
                 TaskDialog.Show("Завершено", $"Обработано стен: {SelectedWalls.Count}");
                 t.Commit();

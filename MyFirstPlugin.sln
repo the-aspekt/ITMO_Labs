@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFirstPlugin", "MyFirstPlugin\MyFirstPlugin.csproj", "{A9466535-97D2-4E86-A174-445897A39414}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitAPITrainingLibrary", "..\RevitAPITrainingLibrary\RevitAPITrainingLibrary.csproj", "{C7864CF2-8C0C-4EC9-8052-F12F1C4A016C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A9466535-97D2-4E86-A174-445897A39414}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9466535-97D2-4E86-A174-445897A39414}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9466535-97D2-4E86-A174-445897A39414}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7864CF2-8C0C-4EC9-8052-F12F1C4A016C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7864CF2-8C0C-4EC9-8052-F12F1C4A016C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7864CF2-8C0C-4EC9-8052-F12F1C4A016C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7864CF2-8C0C-4EC9-8052-F12F1C4A016C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

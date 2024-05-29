@@ -10,7 +10,7 @@
                 MinWidth="200"
                 Height="200"
                 Width="300"
-        Title="Команды для упражнения 5.1">
+        Title="Команды для упражнения 5.2">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Value="5" Property="Margin"/>
