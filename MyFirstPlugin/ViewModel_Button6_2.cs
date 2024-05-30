@@ -40,7 +40,7 @@ namespace MyFirstPlugin
         {
             _commandData = commandData;
             CreateFurnitureCommand = new DelegateCommand(OnCreateFurnitureCommand);
-            FurnitureTypes = FurnitureUtils.GetFurnitureSymbols(_commandData);            
+            FurnitureTypes = FurnitureUtils.GetSymbols(_commandData);            
             Levels = LevelsUtils.GetLevels(_commandData);
 
         }             

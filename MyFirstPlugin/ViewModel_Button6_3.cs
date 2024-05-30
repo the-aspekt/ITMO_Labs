@@ -23,8 +23,8 @@ namespace MyFirstPlugin
         public List<Level> Levels { get; set; } = new List<Level>();
         public Level SelectedLevel { get; set; }
         public int NumberOfElements { get; set; }
-       // public XYZ Point { get; set; }
-
+        // public XYZ Point { get; set; }
+        
         public List<XYZ> Points { get; set; } = new List<XYZ>();
 
         public event EventHandler HideRequest;
@@ -43,7 +43,7 @@ namespace MyFirstPlugin
         {
             _commandData = commandData;
             CreateFurnitureCommand = new DelegateCommand(OnCreateFurnitureCommand);
-            FurnitureTypes = FurnitureUtils.GetFurnitureSymbols(_commandData);            
+            FurnitureTypes = FamilySymbolUtils.GetSymbols(_commandData).Where(s => s.Family.FamilyPlacementType == FamilyPlacementType.OneLevelBased).ToList();
             Levels = LevelsUtils.GetLevels(_commandData);
             NumberOfElements = 1;
 
@@ -56,7 +56,7 @@ namespace MyFirstPlugin
             UIApplication uIApplication = _commandData.Application;
             UIDocument uIDocument = uIApplication.ActiveUIDocument;
             Document document = uIDocument.Document;
-
+            
             if (SelectedFurnitureType == null || SelectedLevel == null || NumberOfElements < 1)
             {
                 return;

@@ -95,6 +95,7 @@ namespace MyFirstPlugin
             string ribbonTabName2 = "Разделы 6-8";
 
             application.CreateRibbonTab(ribbonTabName2);
+
             RibbonPanel panel6 = application.CreateRibbonPanel(ribbonTabName2, "Раздел 6");
             PushButtonData pushButtonData6_1 =
                 new PushButtonData("Button6_1", "Создать воздуховод", assemblyPath, "MyFirstPlugin.Main6_1");
@@ -108,6 +109,13 @@ namespace MyFirstPlugin
                 new PushButtonData("Button6_3", "Расставить элементы между двумя точками", assemblyPath, "MyFirstPlugin.Main6_3");
             panel6.AddItem(pushButtonData6_3);
             panel6.AddSeparator();
+
+
+            RibbonPanel panel7 = application.CreateRibbonPanel(ribbonTabName2, "Раздел 7");
+            PushButtonData pushButtonData7_1 =
+                new PushButtonData("Button7_1", "Создать лист", assemblyPath, "MyFirstPlugin.Main7_1");
+            panel7.AddItem(pushButtonData7_1);
+            panel7.AddSeparator();
 
             #endregion
 
