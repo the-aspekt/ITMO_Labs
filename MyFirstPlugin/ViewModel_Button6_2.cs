@@ -58,7 +58,7 @@ namespace MyFirstPlugin
             }
 
             XYZPoint = SelectionUtils.GetPoint(_commandData, ObjectSnapTypes.Endpoints);
-            FamilyInstanceUtils.CreateFamilyInstance(_commandData, SelectedFurnitureType, XYZPoint, SelectedLevel, "Создание семейства мебели");
+            FamiliesInstancesUtils.CreateFamilyInstance(_commandData, SelectedFurnitureType, XYZPoint, SelectedLevel, "Создание семейства мебели");
 
             RaiseShowRequest();
         }

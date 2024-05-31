@@ -1,0 +1,45 @@
+﻿<Window x:Class="MyFirstPlugin.View_Button1_1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MyFirstPlugin"
+             mc:Ignorable="d" 
+             d:DesignHeight="370" d:DesignWidth="300"                
+                SizeToContent="WidthAndHeight"
+                Title="Копирование параметров из 1 типоразмера в другой">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Value="5" Property="Margin"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Value="5" Property="Margin"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Value="5" Property="Margin"/>
+        </Style>        
+    </Window.Resources>
+    <StackPanel>
+        <Label Content="Выбор семейства для получения параметров"/>
+        <ComboBox ItemsSource="{Binding BasicFamily}"
+          SelectedItem="{Binding SelectedBasicFamily}"
+          DisplayMemberPath="Name"/>
+        <Label Content="Выбор семейства для копирования параметров"/>
+        <ComboBox ItemsSource="{Binding TargetFamily}"
+              SelectedItem="{Binding SelectedTargetFamily}"
+              DisplayMemberPath="Name"/>
+        <Label Content="Выбор семейства основной надписи"/>
+        <ComboBox ItemsSource="{Binding TitleBlocks}"
+                  SelectedItem="{Binding SelectedTitleBlock}"
+                  DisplayMemberPath="Name"/>       
+        <Label Content="Создать листы"/>
+        <Button Content="Применить" Command="{Binding CreateSheetCommand}"/>
+        <Label Content="Выбор легенды, для добавления на листы"/>
+        <ComboBox ItemsSource="{Binding Views}"
+                   SelectedItem="{Binding SelectedView}"
+                   DisplayMemberPath="Name"/>
+        <Label Content="Заполнить поле 'Designed By'"/>
+        <TextBox Text="{Binding Designed_By}"   />
+
+    </StackPanel>
+</Window>

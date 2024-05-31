@@ -14,18 +14,22 @@ using NPOI.OpenXmlFormats.Wordprocessing;
 
 namespace MyFirstPlugin
 {
-    public class ViewModel_Button7_1
+    public class ViewModel_Button1_1
     {
         private ExternalCommandData _commandData;
         private Document _doc;
 
         public DelegateCommand CreateSheetCommand { get; }
+        public List<Family> BasicFamily { get; set; } = new List<Family>();
+        public Family SelectedBasicFamily { get; set; }
+        public List<Family> TargetFamily { get; set; } = new List<Family>();
+        public Family SelectedTargetFamily { get; set; }
         public List<FamilySymbol> TitleBlocks { get; set; } = new List<FamilySymbol>();
         public FamilySymbol SelectedTitleBlock { get; set; }
 
         public List<View> Views { get; set; } = new List<View>();
         public View SelectedView { get; set; }
-        public int NumberOfElements { get; set; }
+
         private string parameterName = "Designed_By";
         public string Designed_By { get; set; }
         // public XYZ Point { get; set; }
@@ -44,7 +48,13 @@ namespace MyFirstPlugin
             ShowRequest?.Invoke(this, EventArgs.Empty);
         }
 
-        public ViewModel_Button7_1(ExternalCommandData commandData)
+        public event EventHandler CloseRequest;
+        private void RaiseCloseRequest()
+        {
+            CloseRequest?.Invoke(this, EventArgs.Empty);
+        }
+
+        public ViewModel_Button1_1(ExternalCommandData commandData)
         {
             _commandData = commandData;
             _doc = _commandData.Application.ActiveUIDocument.Document;
@@ -52,10 +62,11 @@ namespace MyFirstPlugin
 
             TitleBlocks = TitleblockUtils.GetSymbols(_commandData);
             SelectedTitleBlock = TitleBlocks.FirstOrDefault();
-
-            Views = ViewsUtils.GetLegends(_doc);
-
-            NumberOfElements = 1;
+            BasicFamily = FamiliesUtils.GetFamilies(_commandData);
+            SelectedBasicFamily = BasicFamily.FirstOrDefault(f => f.Name.Contains("Плита"));
+            TargetFamily = FamiliesUtils.GetFamilies(_commandData);
+            SelectedTargetFamily = BasicFamily.FirstOrDefault(f => f.Name.Contains("Плита") && f.FamilyCategory.Id.IntegerValue == -2002000);
+            Views = ViewsUtils.GetLegends(_doc);            
             
         }             
 
@@ -67,7 +78,7 @@ namespace MyFirstPlugin
             Document document = uIDocument.Document;
             Definition definitionDesigned_By = null;
 
-            if (SelectedTitleBlock == null || NumberOfElements < 1)
+            if (SelectedTitleBlock == null || SelectedBasicFamily == null || SelectedTargetFamily == null)
             {
                 return;
             }
@@ -83,8 +94,7 @@ namespace MyFirstPlugin
             {
                 t.Start();
 
-                for (int i = 0; i < NumberOfElements; i++)
-                {
+                
                     ViewSheet list = ViewSheet.Create(document, SelectedTitleBlock.Id);
 
                     if (SelectedView != null)
@@ -96,12 +106,12 @@ namespace MyFirstPlugin
                         Viewport.Create(document, list.Id, SelectedView.Id, point);
                     }
 
-                    if (Designed_By.Length != 0 && definitionDesigned_By != null)
+                    if (Designed_By.Length == 0 && definitionDesigned_By != null)
                     {                        
                         Parameter parameter = list.LookupParameter(parameterName);
                         parameter.Set(Designed_By);
                     }
-                }                              
+                                             
 
                 t.Commit();
             }

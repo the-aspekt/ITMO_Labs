@@ -43,7 +43,7 @@ namespace MyFirstPlugin
         {
             _commandData = commandData;
             CreateFurnitureCommand = new DelegateCommand(OnCreateFurnitureCommand);
-            FurnitureTypes = FamilySymbolUtils.GetSymbols(_commandData).Where(s => s.Family.FamilyPlacementType == FamilyPlacementType.OneLevelBased).ToList();
+            FurnitureTypes = FamiliesSymbolsUtils.GetSymbols(_commandData).Where(s => s.Family.FamilyPlacementType == FamilyPlacementType.OneLevelBased).ToList();
             Levels = LevelsUtils.GetLevels(_commandData);
             NumberOfElements = 1;
 
@@ -70,7 +70,7 @@ namespace MyFirstPlugin
                 {
                     //XYZ point = newLine.Evaluate(i / (NumberOfElements + 1), true);
                     XYZ point = Points[0] + (Points[1]- Points[0]) * i / (NumberOfElements + 1);
-                    FamilyInstanceUtils.CreateFamilyInstanceWithoutTransaction(_commandData, SelectedFurnitureType, point, SelectedLevel);
+                    FamiliesInstancesUtils.CreateFamilyInstanceWithoutTransaction(_commandData, SelectedFurnitureType, point, SelectedLevel);
                 }
                 t.Commit();
             }
