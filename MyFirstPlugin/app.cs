@@ -26,7 +26,7 @@ namespace MyFirstPlugin
             application.CreateRibbonTab(ribbonTabName);
             RibbonPanel panel = application.CreateRibbonPanel(ribbonTabName, "Раздел 2");
             PushButtonData pushButtonData =
-                new PushButtonData("Button1", "Передать параметры", assemblyPath, "MyFirstPlugin.MyFirstCommand");
+                new PushButtonData("Button1", "Передать параметры", assemblyPath, "MyFirstPlugin.Main1_1");
             panel.AddItem(pushButtonData);
             panel.AddSeparator();
             PushButtonData pushButtonData2 =

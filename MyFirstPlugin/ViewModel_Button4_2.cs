@@ -16,6 +16,7 @@ namespace MyFirstPlugin
     {
 
         private ExternalCommandData _commandData;
+        private Document _doc;
 
         public DelegateCommand WallTypeApplyCommand { get; }
         public List<Wall> SelectedWalls { get; set; } = new List<Wall>();
@@ -37,8 +38,10 @@ namespace MyFirstPlugin
         public ViewModel_Button4_2(ExternalCommandData commandData)
         {
             _commandData = commandData;
+
+            _doc = _commandData.Application.ActiveUIDocument.Document;
             WallTypeApplyCommand = new DelegateCommand(OnWallTypeApplyCommand);
-            WallTypes = WallsUtils.GetWallTypes(_commandData);
+            WallTypes = WallsUtils.GetWallTypes(_doc);
             SelectedWalls = SelectionUtils.SelectWalls(_commandData);
         }       
 

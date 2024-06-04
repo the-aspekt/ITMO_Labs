@@ -50,13 +50,15 @@ namespace MyFirstPlugin
             _doc = _commandData.Application.ActiveUIDocument.Document;
             CreateSheetCommand = new DelegateCommand(OnCreateSheetCommand);
 
-            TitleBlocks = TitleblockUtils.GetSymbols(_commandData);
+            TitleBlocks = TitleblockUtils.GetSymbols(_doc);
             SelectedTitleBlock = TitleBlocks.FirstOrDefault();
 
             Views = ViewsUtils.GetLegends(_doc);
 
             NumberOfElements = 1;
-            
+            Designed_By = "";
+
+
         }             
 
         private void OnCreateSheetCommand()
@@ -89,7 +91,7 @@ namespace MyFirstPlugin
 
                     if (SelectedView != null)
                     {
-                        var thisTitleblock = TitleblockUtils.GetInstances(_commandData).Where(inst => inst.OwnerViewId == list.Id).FirstOrDefault();
+                        var thisTitleblock = TitleblockUtils.GetInstances(_doc).Where(inst => inst.OwnerViewId == list.Id).FirstOrDefault();
                         var box = thisTitleblock.get_BoundingBox(list);
 
                         XYZ point = (box.Max - box.Min)/2;

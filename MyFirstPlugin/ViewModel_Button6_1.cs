@@ -16,6 +16,7 @@ namespace MyFirstPlugin
     public class ViewModel_Button6_1
     {
         private ExternalCommandData _commandData;
+        private Document _doc;
 
         public DelegateCommand CreateAirChannelCommand { get; }
         public List<DuctType> AirChannelTypes { get; set; } = new List<DuctType>();
@@ -42,10 +43,13 @@ namespace MyFirstPlugin
         public ViewModel_Button6_1(ExternalCommandData commandData)
         {
             _commandData = commandData;
+
+            _doc = _commandData.Application.ActiveUIDocument.Document;
+
             CreateAirChannelCommand = new DelegateCommand(OnCreateAirChannelCommand);
-            AirChannelTypes = DuctsUtils.GetDuctTypes(_commandData);
-            ductSystemTypes = DuctsUtils.GetDuctSystemTypes(_commandData);
-            Levels = LevelsUtils.GetLevels(_commandData);
+            AirChannelTypes = DuctsUtils.GetDuctTypes(_doc);
+            ductSystemTypes = DuctsUtils.GetDuctSystemTypes(_doc);
+            Levels = LevelsUtils.GetLevels(_doc);
 
             SelectedDuctSystemTypes = ductSystemTypes.FirstOrDefault(m => m.SystemClassification == MEPSystemClassification.SupplyAir);
             AirChannelOffset = 0;

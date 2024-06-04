@@ -16,6 +16,7 @@ namespace MyFirstPlugin
     public class ViewModel_Button6_3
     {
         private ExternalCommandData _commandData;
+        private Document _doc;
 
         public DelegateCommand CreateFurnitureCommand { get; }
         public List<FamilySymbol> FurnitureTypes { get; set; } = new List<FamilySymbol>();
@@ -42,9 +43,11 @@ namespace MyFirstPlugin
         public ViewModel_Button6_3(ExternalCommandData commandData)
         {
             _commandData = commandData;
+            _doc = _commandData.Application.ActiveUIDocument.Document;
+
             CreateFurnitureCommand = new DelegateCommand(OnCreateFurnitureCommand);
-            FurnitureTypes = FamiliesSymbolsUtils.GetSymbols(_commandData).Where(s => s.Family.FamilyPlacementType == FamilyPlacementType.OneLevelBased).ToList();
-            Levels = LevelsUtils.GetLevels(_commandData);
+            FurnitureTypes = FamiliesSymbolsUtils.GetSymbols(_doc).Where(s => s.Family.FamilyPlacementType == FamilyPlacementType.OneLevelBased).ToList();
+            Levels = LevelsUtils.GetLevels(_doc);
             NumberOfElements = 1;
 
             Points = SelectionUtils.Get2Points(_commandData, ObjectSnapTypes.Endpoints);
