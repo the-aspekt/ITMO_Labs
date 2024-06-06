@@ -134,6 +134,9 @@
   <ItemGroup>
     <Compile Include="Aperture.cs" />
     <Compile Include="app.cs" />
+    <Compile Include="ExportToJPEG.cs" />
+    <Compile Include="ExportToNWC.cs" />
+    <Compile Include="ExportToIFC.cs" />
     <Compile Include="Main1_1.cs" />
     <Compile Include="Main7_1.cs" />
     <Compile Include="Main6_3.cs" />

@@ -110,13 +110,25 @@ namespace MyFirstPlugin
             panel6.AddItem(pushButtonData6_3);
             panel6.AddSeparator();
 
-
             RibbonPanel panel7 = application.CreateRibbonPanel(ribbonTabName2, "Раздел 7");
             PushButtonData pushButtonData7_1 =
                 new PushButtonData("Button7_1", "Создать лист", assemblyPath, "MyFirstPlugin.Main7_1");
             panel7.AddItem(pushButtonData7_1);
             panel7.AddSeparator();
 
+            RibbonPanel panel8 = application.CreateRibbonPanel(ribbonTabName2, "Раздел 8");
+            PushButtonData pushButtonData8_1 =
+                new PushButtonData("Button8_1", "Экспорт в IFC", assemblyPath, "MyFirstPlugin.ExportToIFC");
+            panel8.AddItem(pushButtonData8_1);
+            panel8.AddSeparator();
+            PushButtonData pushButtonData8_2 =
+                new PushButtonData("Button8_2", "Экспорт в NWC", assemblyPath, "MyFirstPlugin.ExportToNWC");
+            panel8.AddItem(pushButtonData8_2);
+            panel8.AddSeparator();
+            PushButtonData pushButtonData8_3 =
+                new PushButtonData("Button8_3", "Экспорт в JPEG", assemblyPath, "MyFirstPlugin.ExportToJPEG");
+            panel8.AddItem(pushButtonData8_3);
+            panel8.AddSeparator();
             #endregion
 
 

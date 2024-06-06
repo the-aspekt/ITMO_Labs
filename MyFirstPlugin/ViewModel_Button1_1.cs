@@ -108,7 +108,7 @@ namespace MyFirstPlugin
 
             List<ViewDrafting> existingViewDrafting = ViewsUtils.GetDraftingViews(document);
 
-            TaskDialog.Show("Внимание", $"Будет создано: 1 листов"); //{BasicFamilySymbols.Count}
+            TaskDialog.Show("Внимание", $"Будет создано: {BasicFamilySymbols.Count} листов"); //{BasicFamilySymbols.Count}
 
             using (var t = new Transaction(document, "Создание листов"))
             {
@@ -155,37 +155,43 @@ namespace MyFirstPlugin
                     
                     if (newViewDrafting == null)
                     {
+                        //var copiedElement = ElementTransformUtils.CopyElements(document, new List<ElementId>() {viewTemplate.Id}, document, null, null).FirstOrDefault();
+                        //newViewDrafting = document.GetElement(copiedElement) as ViewDrafting;
+                        //newViewDrafting.Name = currentBFS.Name;
+
                         newViewDrafting = document.GetElement(viewTemplate.Duplicate(ViewDuplicateOption.WithDetailing)) as ViewDrafting;
                         newViewDrafting.Name = currentBFS.Name;
+
+                        //Блок создания элементов по экземплярам
+                        //newViewDrafting = ViewDrafting.Create(document, familyType.Id);
+                        //newViewDrafting.Name = currentBFS.Name;
+                        //TaskDialog.Show("Завершено", $"Создан  чертежный вид : {newViewDrafting.Name}");
+
+                        //var default2DFamilyViewID = viewTemplate.GetDependentElements(instanceFilter);
+                        //ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
+                        //// TaskDialog.Show("Завершено", $"Скопированы экземпляры в количестве: {default2DFamilyViewID.Count}");
+
+                        //ElementClassFilter textNoteFilter = new ElementClassFilter(typeof(TextNote));
+                        //default2DFamilyViewID = viewTemplate.GetDependentElements(textNoteFilter);
+                        //ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
+                        //// TaskDialog.Show("Завершено", $"Скопированы текстовые примечания в количестве: {default2DFamilyViewID.Count}");
+
+                        //ElementClassFilter dimensionsFilter = new ElementClassFilter(typeof(Dimension));
+                        //default2DFamilyViewID = viewTemplate.GetDependentElements(dimensionsFilter);
+                        //ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
+                        //// TaskDialog.Show("Завершено", $"Скопированы размеры в количестве: {default2DFamilyViewID.Count}");
                     }
 
-                    //Блок создания элементов по экземплярам
-                    //ViewDrafting newViewDrafting = ViewDrafting.Create(document, familyType.Id);
-                    //newViewDrafting.Name = currentBFS.Name;
-                    // TaskDialog.Show("Завершено", $"Создан  чертежный вид : {newViewDrafting.Name}");
 
-                    // var default2DFamilyViewID = viewTemplate.GetDependentElements(instanceFilter);
-                    // ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);                    
-                    //// TaskDialog.Show("Завершено", $"Скопированы экземпляры в количестве: {default2DFamilyViewID.Count}");
-
-                    // ElementClassFilter textNoteFilter = new ElementClassFilter(typeof(TextNote));
-                    // default2DFamilyViewID = viewTemplate.GetDependentElements(textNoteFilter);
-                    // ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
-                    //// TaskDialog.Show("Завершено", $"Скопированы текстовые примечания в количестве: {default2DFamilyViewID.Count}");
-
-                    // ElementClassFilter dimensionsFilter = new ElementClassFilter(typeof(Dimension));
-                    // default2DFamilyViewID = viewTemplate.GetDependentElements(dimensionsFilter);
-                    // ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
-                    //// TaskDialog.Show("Завершено", $"Скопированы размеры в количестве: {default2DFamilyViewID.Count}");
 
                     //изменить вхождение на правильный чертежный вид
                     var familyViewIDInstance = newViewDrafting.GetDependentElements(instanceFilter).FirstOrDefault();
-                        FamilyInstance default2DFamilyView = document.GetElement(familyViewIDInstance) as FamilyInstance;
-                        default2DFamilyView.ChangeTypeId(currentTFS.Id);
+                    FamilyInstance default2DFamilyView = document.GetElement(familyViewIDInstance) as FamilyInstance;
+                    default2DFamilyView.ChangeTypeId(currentTFS.Id);
 
 
-                        //разместить чертежный вид на листе
-                        var thisTitleblock = TitleblockUtils.GetInstances(document).Where(inst => inst.OwnerViewId == list.Id).FirstOrDefault();
+                    //разместить чертежный вид на листе
+                    var thisTitleblock = TitleblockUtils.GetInstances(document).Where(inst => inst.OwnerViewId == list.Id).FirstOrDefault();
                         var box = thisTitleblock.get_BoundingBox(list);
                         XYZ pointForCurrentTFS = new XYZ(0.0, box.Max.Y, 0.0);
                         Viewport.Create(document, list.Id, newViewDrafting.Id, pointForCurrentTFS);
