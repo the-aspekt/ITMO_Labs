@@ -1,16 +1,12 @@
-﻿using Autodesk.Revit.DB.Plumbing;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Prism.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.DB.Mechanical;
 using RevitAPITrainingLibrary;
-using NPOI.OpenXmlFormats.Wordprocessing;
+using System.Windows.Input;
 
 namespace MyFirstPlugin
 {
@@ -19,7 +15,7 @@ namespace MyFirstPlugin
         private ExternalCommandData _commandData;
         private Document _doc;
 
-        public DelegateCommand CreateSheetCommand { get; }
+        public ICommand CreateSheetCommand { get; }
         public List<Family> BasicFamily { get; set; } = new List<Family>();
         public Family SelectedBasicFamily { get; set; }
         public List<Family> TargetFamily { get; set; } = new List<Family>();
@@ -30,7 +26,7 @@ namespace MyFirstPlugin
         public List<View> Views { get; set; } = new List<View>();
         public View SelectedView { get; set; }
 
-        private string parameterName = "Designed_By";
+        private string parameterName = "ADSK_Назначение вида";
         public string Designed_By { get; set; }
         // public XYZ Point { get; set; }
 
@@ -58,7 +54,7 @@ namespace MyFirstPlugin
         {
             _commandData = commandData;
             _doc = _commandData.Application.ActiveUIDocument.Document;
-            CreateSheetCommand = new DelegateCommand(OnCreateSheetCommand);
+            //CreateSheetCommand = new DelegateCommand(OnCreateSheetCommand);
 
             TitleBlocks = TitleblockUtils.GetSymbols(_doc);
             SelectedTitleBlock = TitleBlocks.FirstOrDefault();
@@ -68,12 +64,63 @@ namespace MyFirstPlugin
             TargetFamily = FamiliesUtils.GetFamilies(_doc);
             SelectedTargetFamily = TargetFamily.FirstOrDefault(f => f.Name.Contains("Плита")
                                     && f.FamilyCategory.Id == Category.GetCategory(_doc, BuiltInCategory.OST_DetailComponents).Id);
-            Designed_By = "";
+            Designed_By = "Тест плит";
             Views = ViewsUtils.GetLegends(_doc);
 
+            CreateSheetCommand = new RelayCommand(OnCreateSheetCommand, OnCreateSheetCommandCanExecute);
+        }
+        
+        private bool OnCreateSheetCommandCanExecute(object sender)
+        {
+            if (SelectedTitleBlock == null || SelectedBasicFamily == null || SelectedTargetFamily == null)
+            {
+                return false;
+            }
+            return true;
         }
 
-        private void OnCreateSheetCommand()
+        public string GetTemplateName(FamilySymbol panelsFamilySymbol)
+        {
+            string templateName = "Шаблон ";
+            bool isBy3SidesSupported = panelsFamilySymbol.LookupParameter("Опирание по трём сторонам").AsInteger() == 1;
+            if (isBy3SidesSupported)
+                templateName += "ПТ ";
+            else
+                templateName += "ПД ";
+            double currentLength = panelsFamilySymbol.LookupParameter("Панель_Длина").AsDouble();
+            currentLength = UnitUtils.ConvertFromInternalUnits(currentLength, UnitTypeId.Millimeters);
+            if (currentLength > 4999)
+                templateName += "60";
+            else
+                templateName += "45";
+            bool hasAperture = panelsFamilySymbol.LookupParameter("Проём__Вкл-выкл").AsInteger() == 1;
+            if (hasAperture)
+                templateName += " проем";
+
+            return templateName;
+        }
+        public string GetSpecialTemplateName(FamilySymbol panelsFamilySymbol)
+        {
+            string templateName = "!Шаблон ";
+            bool isBy3SidesSupported = panelsFamilySymbol.LookupParameter("Опирание по трём сторонам").AsInteger() == 1;
+            if (isBy3SidesSupported)
+                templateName += "ПТ ";
+            else
+                templateName += "ПД ";
+            double currentLength = panelsFamilySymbol.LookupParameter("Панель_Длина").AsDouble();
+            currentLength = UnitUtils.ConvertFromInternalUnits(currentLength, UnitTypeId.Millimeters);
+            if (currentLength > 4999)
+                templateName += "60";
+            else
+                templateName += "45";
+            bool hasAperture = panelsFamilySymbol.LookupParameter("Проём__Вкл-выкл").AsInteger() == 1;
+            if (hasAperture)
+                templateName += " проем";
+
+            return templateName;
+        }
+
+        private void OnCreateSheetCommand(object sender)
         {
             RaiseHideRequest();
             UIApplication uIApplication = _commandData.Application;
@@ -116,84 +163,86 @@ namespace MyFirstPlugin
 
                 for (int i = 0; i < 1; i++) //BasicFamilySymbols.Count
                 {
-                    ViewSheet list = ViewSheet.Create(document, SelectedTitleBlock.Id);
                     FamilySymbol currentBFS = BasicFamilySymbols[i];
-                    FamilySymbol currentTFS = TargetFamilySymbols.FirstOrDefault(fs => fs.Name == currentBFS.Name)
-                        ?? (FamilySymbol)TargetFamilySymbols.FirstOrDefault().Duplicate(currentBFS.Name);
 
-                   // TaskDialog.Show("Завершено", $"Создан или найден тип: {currentBFS.Name}");
-
-                    for (int j = 0; j < commonStrings.Count; j++)
-                    {
-                        string lookUpParameterName = commonStrings[j];
-                        FamiliesSymbolsUtils.SetParameterValue(currentBFS, currentTFS, lookUpParameterName);
-                    }
-                    //TaskDialog.Show("Завершено", $"Присвоено параметров: {commonStrings.Count}");
+                    //получаем параметры плиты для выбора шаблона
+                    string templateName = GetTemplateName(currentBFS);
+                    bool isMirrored = currentBFS.LookupParameter("Отзеркаленная панель").AsInteger() == 1;
 
                     //получить базовый чертежный вид
                     var viewDraftings = ViewsUtils.GetDraftingViews(document);
-                    ViewDrafting viewTemplate = viewDraftings.Where(v => v.Name == "шаблон оформления плиты перекрытия").FirstOrDefault();                                      
+                    ViewDrafting viewTemplate = viewDraftings.Where(v => v.Name == templateName).FirstOrDefault();
 
                     if (viewTemplate == null)
                     {
-                        TaskDialog.Show("Ошибка", $"Отсутствует шаблон оформления плиты перекрытия!");
-                        return;
+                        TaskDialog.Show("Ошибка", $"Отсутствует шаблон для оформления плиты перекрытия {currentBFS.Name}! \nПлита будет пропущена.");
+                        continue;
                     }
-                                                       
-                    ViewFamilyType familyType = ViewsUtils.GetViewFamilyTypes(document).Where(p => p.ViewFamily == ViewFamily.Drafting).FirstOrDefault();
-                    ElementClassFilter instanceFilter = new ElementClassFilter(typeof(FamilyInstance));
-                    ViewDrafting newViewDrafting = null; //можно переписать в ЛИНК формате
 
-                    foreach (ViewDrafting item in existingViewDrafting)
-                    {
-                        if (item.Name == currentBFS.Name)
-                        {
-                            newViewDrafting = item;
-                            break;
-                        }
-                    }
-                    
+                    // ViewFamilyType familyType = ViewsUtils.GetViewFamilyTypes(document).Where(p => p.ViewFamily == ViewFamily.Drafting).FirstOrDefault();
+                    ElementClassFilter instanceFilter = new ElementClassFilter(typeof(FamilyInstance));
+                    ViewDrafting newViewDrafting = existingViewDrafting.FirstOrDefault(item => item.Name == currentBFS.Name);
+
                     if (newViewDrafting == null)
                     {
-                        //var copiedElement = ElementTransformUtils.CopyElements(document, new List<ElementId>() {viewTemplate.Id}, document, null, null).FirstOrDefault();
-                        //newViewDrafting = document.GetElement(copiedElement) as ViewDrafting;
-                        //newViewDrafting.Name = currentBFS.Name;
-
                         newViewDrafting = document.GetElement(viewTemplate.Duplicate(ViewDuplicateOption.WithDetailing)) as ViewDrafting;
                         newViewDrafting.Name = currentBFS.Name;
+                    }
+                    newViewDrafting.LookupParameter("ADSK_Группирование").Set("Плагин");
 
-                        //Блок создания элементов по экземплярам
-                        //newViewDrafting = ViewDrafting.Create(document, familyType.Id);
-                        //newViewDrafting.Name = currentBFS.Name;
-                        //TaskDialog.Show("Завершено", $"Создан  чертежный вид : {newViewDrafting.Name}");
+                    //изменить вхождения на правильный чертежный вид
+                    var familyIDInstance = newViewDrafting.GetDependentElements(instanceFilter).ToList();
+                    foreach ( var familyElementID in familyIDInstance)
+                    {
+                        //FamilySymbol currentTFS = TargetFamilySymbols.FirstOrDefault(fs => fs.Name == currentBFS.Name)
+                        //    ?? (FamilySymbol)TargetFamilySymbols.FirstOrDefault().Duplicate(currentBFS.Name);
 
-                        //var default2DFamilyViewID = viewTemplate.GetDependentElements(instanceFilter);
-                        //ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
-                        //// TaskDialog.Show("Завершено", $"Скопированы экземпляры в количестве: {default2DFamilyViewID.Count}");
 
-                        //ElementClassFilter textNoteFilter = new ElementClassFilter(typeof(TextNote));
-                        //default2DFamilyViewID = viewTemplate.GetDependentElements(textNoteFilter);
-                        //ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
-                        //// TaskDialog.Show("Завершено", $"Скопированы текстовые примечания в количестве: {default2DFamilyViewID.Count}");
+                        FamilyInstance familyElement = document.GetElement(familyElementID) as FamilyInstance;
+                        FamilySymbol familyElementSymbol = familyElement.Symbol;
+                        FamilySymbol existedSymbol = null; //FamiliesSymbolsUtils.GetSymbols(document).Where(sym => sym.Name == currentBFS.Name).Where(sym => sym.Family == familyElementSymbol.Family).FirstOrDefault();
+                        var existedSymbolID = familyElementSymbol.Family.GetFamilySymbolIds();
+                        foreach ( var symbolID in existedSymbolID)
+                        {
+                            var symbolIDName = document.GetElement(symbolID).Name;
+                            if (symbolIDName == currentBFS.Name)
+                            {
+                                existedSymbol = document.GetElement(symbolID) as FamilySymbol;
+                                break;
+                            }
+                        }
 
-                        //ElementClassFilter dimensionsFilter = new ElementClassFilter(typeof(Dimension));
-                        //default2DFamilyViewID = viewTemplate.GetDependentElements(dimensionsFilter);
-                        //ElementTransformUtils.CopyElements(viewTemplate, default2DFamilyViewID, newViewDrafting, null, null);
-                        //// TaskDialog.Show("Завершено", $"Скопированы размеры в количестве: {default2DFamilyViewID.Count}");
+                        if (existedSymbol == null)
+                        {
+                            FamilySymbol newFamilyElementSymbol = (FamilySymbol)familyElementSymbol.Duplicate(currentBFS.Name);
+                            familyElement.ChangeTypeId(newFamilyElementSymbol.Id);
+                        }
+                        else
+                        {
+                            familyElement.ChangeTypeId(existedSymbol.Id);
+                        }
+                        // TaskDialog.Show("Завершено", $"Создан или найден тип: {currentBFS.Name}");
+
+                        #region назначение параметров
+                        for (int j = 0; j < commonStrings.Count; j++)
+                        {
+                            string lookUpParameterName = commonStrings[j];
+                            FamiliesSymbolsUtils.SetParameterValue(currentBFS, familyElementSymbol, lookUpParameterName);
+                        }
+                        //TaskDialog.Show("Завершено", $"Присвоено параметров: {commonStrings.Count}");
+                        #endregion
                     }
 
 
 
-                    //изменить вхождение на правильный чертежный вид
-                    var familyViewIDInstance = newViewDrafting.GetDependentElements(instanceFilter).FirstOrDefault();
-                    FamilyInstance default2DFamilyView = document.GetElement(familyViewIDInstance) as FamilyInstance;
-                    default2DFamilyView.ChangeTypeId(currentTFS.Id);
+
 
 
                     //разместить чертежный вид на листе
+                    ViewSheet list = ViewSheet.Create(document, SelectedTitleBlock.Id);
                     var thisTitleblock = TitleblockUtils.GetInstances(document).Where(inst => inst.OwnerViewId == list.Id).FirstOrDefault();
                         var box = thisTitleblock.get_BoundingBox(list);
-                        XYZ pointForCurrentTFS = new XYZ(0.0, box.Max.Y, 0.0);
+                        XYZ pointForCurrentTFS = new XYZ(box.Max.X, box.Max.Y, 0.0);
                         Viewport.Create(document, list.Id, newViewDrafting.Id, pointForCurrentTFS);
 
                         //резместить легенду на листе
@@ -205,8 +254,9 @@ namespace MyFirstPlugin
 
                         if (Designed_By.Length != 0 && definitionDesigned_By != null)
                         {
-                            Parameter parameter = list.LookupParameter(parameterName);
+                            Parameter parameter = newViewDrafting.LookupParameter(parameterName);
                             parameter.Set(Designed_By);
+
                         }
                     }
 

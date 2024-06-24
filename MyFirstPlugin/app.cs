@@ -130,6 +130,18 @@ namespace MyFirstPlugin
             panel8.AddItem(pushButtonData8_3);
             panel8.AddSeparator();
             #endregion
+            #region Практика
+            string ribbonTabName3 = "Практика разработки ОП";
+
+            application.CreateRibbonTab(ribbonTabName3);
+
+            RibbonPanel panel3_1 = application.CreateRibbonPanel(ribbonTabName3, "СР");
+            PushButtonData pushButtonData3_1_1 =
+                new PushButtonData("Buttonpanel3_1_1", "Копировать группу объектов", assemblyPath, "MyFirstPlugin.CopyGroup");
+            panel3_1.AddItem(pushButtonData3_1_1);
+            panel3_1.AddSeparator();
+           
+            #endregion
 
 
             return Result.Succeeded;

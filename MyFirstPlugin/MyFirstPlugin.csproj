@@ -134,6 +134,7 @@
   <ItemGroup>
     <Compile Include="Aperture.cs" />
     <Compile Include="app.cs" />
+    <Compile Include="CopyGroup.cs" />
     <Compile Include="ExportToJPEG.cs" />
     <Compile Include="ExportToNWC.cs" />
     <Compile Include="ExportToIFC.cs" />
@@ -187,6 +188,7 @@
     <Compile Include="View_Button4_1.xaml.cs">
       <DependentUpon>View_Button4_1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GroupSelectionFilter.cs" />
     <Compile Include="WallsSelectionFilter.cs" />
   </ItemGroup>
   <ItemGroup>
