@@ -140,7 +140,11 @@ namespace MyFirstPlugin
                 new PushButtonData("Buttonpanel3_1_1", "Копировать группу объектов", assemblyPath, "MyFirstPlugin.CopyGroup");
             panel3_1.AddItem(pushButtonData3_1_1);
             panel3_1.AddSeparator();
-           
+            PushButtonData pushButtonData3_1_2 =
+                new PushButtonData("Buttonpanel3_1_2", "Создать домик", assemblyPath, "MyFirstPlugin.CreateHouse");
+            panel3_1.AddItem(pushButtonData3_1_2);
+            panel3_1.AddSeparator();
+
             #endregion
 
 

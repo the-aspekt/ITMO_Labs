@@ -41,7 +41,7 @@ namespace MyFirstPlugin
 
             _doc = _commandData.Application.ActiveUIDocument.Document;
             WallTypeApplyCommand = new DelegateCommand(OnWallTypeApplyCommand);
-            WallTypes = WallsUtils.GetWallTypes(_doc);
+            WallTypes = WallsUtils.GetTypes(_doc);
             SelectedWalls = SelectionUtils.SelectWalls(_commandData);
         }       
 
