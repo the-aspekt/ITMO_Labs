@@ -78,23 +78,12 @@ namespace MyFirstPlugin
             XYZ p3 = WallsUtils.GetPointOnTopOfWall(wall, 1) + new XYZ(0, wall.Width / 2,  0);
             XYZ p4 = WallsUtils.GetPointOnBaseOfWall(wall);
 
-            //var orientation = wall.Orientation.Normalize();
-
+          
             curveArray.Append(Line.CreateBound(p1,p2));
             curveArray.Append(Line.CreateBound(p2,p3));
 
-            ReferencePlane plane = document.Create.NewReferencePlane(p3, p1, new XYZ(0, 0, p2.Z), document.ActiveView); // не работает в этом месте
-            /*
-            XYZ extrusionEndPoint = new XYZ(); 
+            ReferencePlane plane = document.Create.NewReferencePlane(p3, p1, new XYZ(0, 0, p2.Z), document.ActiveView); 
             
-            foreach (Wall i in walls)
-            {
-                if (i.Orientation.Normalize().AngleTo(orientation) == 0)
-                {
-                    extrusionEndPoint = WallsUtils.GetPointOnBaseOfWall(i);
-                }
-            }
-            */
             double extrusionStart = UnitUtils.ConvertToInternalUnits(-eave, UnitTypeId.Millimeters);
 
             double extrusionEnd = UnitUtils.ConvertToInternalUnits(6000 + eave, UnitTypeId.Millimeters);
