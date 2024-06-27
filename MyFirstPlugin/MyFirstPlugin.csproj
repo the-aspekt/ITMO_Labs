@@ -134,6 +134,7 @@
   <ItemGroup>
     <Compile Include="Aperture.cs" />
     <Compile Include="app.cs" />
+    <Compile Include="PasteOpening.cs" />
     <Compile Include="CreateHouse.cs" />
     <Compile Include="CopyGroup.cs" />
     <Compile Include="ExportToJPEG.cs" />

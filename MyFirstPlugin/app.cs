@@ -144,6 +144,10 @@ namespace MyFirstPlugin
                 new PushButtonData("Buttonpanel3_1_2", "Создать домик", assemblyPath, "MyFirstPlugin.CreateHouse");
             panel3_1.AddItem(pushButtonData3_1_2);
             panel3_1.AddSeparator();
+            PushButtonData pushButtonData3_1_3 =
+              new PushButtonData("Buttonpanel3_1_3", "Расставить отверстия", assemblyPath, "MyFirstPlugin.PasteOpening");
+            panel3_1.AddItem(pushButtonData3_1_3);
+            panel3_1.AddSeparator();
 
             #endregion
 
